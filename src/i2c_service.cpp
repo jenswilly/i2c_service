@@ -125,7 +125,8 @@ int main(int argc, char **argv)
 	std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("i2c_server");
 
 	// TODO: read parameters
-	node->get_parameter("i2c_bus", i2cBus_);
+	node->declare_parameter("bus", 0);
+	node->get_parameter("bus", i2cBus_);
 
 	rclcpp::Service<i2c_interfaces::srv::I2CReadRegisterByte>::SharedPtr readRegisterByteService =
 		node->create_service<i2c_interfaces::srv::I2CReadRegisterByte>("i2c_read_register_byte", &readRegisterByte);
