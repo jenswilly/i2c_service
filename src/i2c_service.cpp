@@ -65,8 +65,29 @@ void readRegisterByte(const std::shared_ptr<i2c_interfaces::srv::I2CReadRegister
 void writeByte(const std::shared_ptr<i2c_interfaces::srv::I2CWriteByte::Request> request,
 			   std::shared_ptr<i2c_interfaces::srv::I2CWriteByte::Response> response)
 {
+	if (i2cPort_)
+	{
+		RCLCPP_ERROR(rclcpp::get_logger("i2c_service"), "I2C device /dev/i2c-%d already open!", i2cBus_);
+		response->success = false;
+		delete i2cPort_;
+		i2cPort_ = NULL;
+	}
+
+	i2cPort_ = new i2c_port::I2cPort(i2cBus_, request->address);
+	if (!i2cPort_->isOpen())
+	{
+		RCLCPP_ERROR(rclcpp::get_logger("i2c_service"), "Unable to open I2C device /dev/i2c-%d connection to device 0x%02X", i2cBus_, request->address);
+		response->success = false;
+		delete i2cPort_;
+		i2cPort_ = NULL;
+	}
+
+	uint8_t value = i2cPort_->writeByte(request->value);
 	response->success = true;
-	response->value = 0;
+	response->value = value;
+
+	delete i2cPort_;
+	i2cPort_ = NULL;
 }
 
 void writeRegisterByte(const std::shared_ptr<i2c_interfaces::srv::I2CWriteRegisterByte::Request> request,
