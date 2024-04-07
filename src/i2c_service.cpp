@@ -28,7 +28,7 @@
 #include <memory>
 
 i2c_port::I2cPort *i2cPort_ = NULL;
-int i2cBus_ = 1;
+int i2cBus_ = 0;
 
 void readRegisterByte(const std::shared_ptr<i2c_interfaces::srv::I2CReadRegisterByte::Request> request,
 					  std::shared_ptr<i2c_interfaces::srv::I2CReadRegisterByte::Response> response)
@@ -124,6 +124,9 @@ int main(int argc, char **argv)
 
 	std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("i2c_server");
 
+	// TODO: read parameters
+	node->get_parameter("i2c_bus", i2cBus_);
+
 	rclcpp::Service<i2c_interfaces::srv::I2CReadRegisterByte>::SharedPtr readRegisterByteService =
 		node->create_service<i2c_interfaces::srv::I2CReadRegisterByte>("i2c_read_register_byte", &readRegisterByte);
 	rclcpp::Service<i2c_interfaces::srv::I2CWriteByte>::SharedPtr writeByteService =
@@ -131,7 +134,7 @@ int main(int argc, char **argv)
 	rclcpp::Service<i2c_interfaces::srv::I2CWriteRegisterByte>::SharedPtr writeRegisterByteService =
 		node->create_service<i2c_interfaces::srv::I2CWriteRegisterByte>("i2c_write_register_byte", &writeRegisterByte);
 
-	RCLCPP_INFO(rclcpp::get_logger("i2c_service"), "I2C service server ready.");
+	RCLCPP_INFO(rclcpp::get_logger("i2c_service"), "I2C service server ready using /dev/i2c-%d.", i2cBus_);
 
 	rclcpp::spin(node);
 	rclcpp::shutdown();
