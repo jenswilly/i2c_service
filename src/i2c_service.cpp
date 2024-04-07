@@ -28,7 +28,7 @@
 #include <memory>
 
 i2c_port::I2cPort *i2cPort_ = NULL;
-int i2cBus_;
+int i2cBus_ = 1;
 
 void readRegisterByte(const std::shared_ptr<i2c_interfaces::srv::I2CReadRegisterByte::Request> request,
 					  std::shared_ptr<i2c_interfaces::srv::I2CReadRegisterByte::Response> response)

@@ -2,9 +2,12 @@
 
 ## Prerequisites
 
-The `libi2c` needs to be installed. If not already installed, install with:
+The `libi2c` and `i2c-tools` needs to be installed. If not already installed, install with:
 
-`sudo apt-get install libi2c-dev`
+```bash
+sudo apt-get install i2c-tools
+sudo apt-get install libi2c-dev
+```
 
 # Services
 ## I2CReadRegisterByte
